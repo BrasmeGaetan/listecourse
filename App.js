@@ -1,43 +1,57 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+const App = () => {
+  const [listeCourses, setListeCourses] = useState(["Pain", "Fromage", "Fruits"]);
+  const [nouvelElement, setNouvelElement] = useState("");
 
-export default function App() {
-    function sum(Pain, Fromage, Fruits) {
-        return Pain + Fromage + Fruits;
+  const ajouterElementALaListe = () => {
+    if (nouvelElement.trim() !== "") {
+      setListeCourses([...listeCourses, nouvelElement]);
+      setNouvelElement("");
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>*** Ma liste de courses ***</Text>
+      {
+        listeCourses.map((element, index) => {
+          return (
+            <Text key={index}> {index + 1} - {element} </Text>
+          );
+        })
       }
-    const listecourses = ["Pain", "Fromage", "Fruits"];
-    return (
-        <View style={styles.container}>
-            <Text>*** Ma liste de courses ***</Text>
-            {
-                listecourses.map((element, i) => {
-                    return (
-                        <Text> {i + 1} - {element} </Text>
-                    );
-                })
-            }
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                placeholder="Entrer votre nombre"
-            />
-            <Button onPress={sum} title="Valider ma liste de course" color="#841584" />
-        </View>
-    );
-}
+      <TextInput 
+        style={styles.input} 
+        value={nouvelElement} 
+        onChangeText={setNouvelElement} 
+        placeholder="Ajouter un élément"
+      />
+      <Button title="Ajouter" onPress={ajouterElementALaListe} />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        width: 200,
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingLeft: 8
+  }
 });
+
+export default App;
