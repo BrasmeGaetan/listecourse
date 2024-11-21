@@ -4,6 +4,7 @@ import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'rea
 const App = () => {
   const [listeCourses, setListeCourses] = useState(["Pain", "Fromage", "Fruits"]);
   const [nouvelElement, setNouvelElement] = useState("");
+  const [indexElementAModifier, setIndexElementAModifier] = useState(null);
 
   const ajouterElementALaListe = () => {
     if (nouvelElement.trim() !== "") {
@@ -16,15 +17,32 @@ const App = () => {
     setListeCourses(listeCourses.filter((_, i) => i !== index));
   };
 
+  const modifierElement = () => {
+    if (nouvelElement.trim() !== "" && indexElementAModifier !== null) {
+      const nouvelleListe = [...listeCourses];
+      nouvelleListe[indexElementAModifier] = nouvelElement;
+      setListeCourses(nouvelleListe);
+      setNouvelElement("");
+      setIndexElementAModifier(null);
+    }
+  };
+
+  const selectionnerElementAModifier = (index) => {
+    setNouvelElement(listeCourses[index]);
+    setIndexElementAModifier(index);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>*** Ma liste de courses ***</Text>
-      
       {listeCourses.map((element, index) => (
         <View key={index} style={styles.itemContainer}>
           <Text>{index + 1} - {element}</Text>
           <TouchableOpacity onPress={() => supprimerElement(index)}>
             <Text style={styles.deleteButton}>Supprimer</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => selectionnerElementAModifier(index)}>
+            <Text style={styles.editButton}>Modifier</Text>
           </TouchableOpacity>
         </View>
       ))}
@@ -33,9 +51,12 @@ const App = () => {
         style={styles.input} 
         value={nouvelElement} 
         onChangeText={setNouvelElement} 
-        placeholder="Ajouter un élément"
+        placeholder={indexElementAModifier !== null ? "Modifier l'élément" : "Ajouter un élément"}
       />
-      <Button title="Ajouter" onPress={ajouterElementALaListe} />
+      <Button 
+        title={indexElementAModifier !== null ? "Modifier" : "Ajouter"} 
+        onPress={indexElementAModifier !== null ? modifierElement : ajouterElementALaListe} 
+      />
     </View>
   );
 };
@@ -52,7 +73,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   input: {
-    width: '100%',
+    width: '60%',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -62,11 +83,15 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
+    width: '60%',
     marginBottom: 10
   },
   deleteButton: {
     color: 'red',
+    fontWeight: 'bold'
+  },
+  editButton: {
+    color: 'blue',
     fontWeight: 'bold'
   }
 });
